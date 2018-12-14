@@ -1,0 +1,2 @@
+global.requestAnimationFrame = window.requestAnimationFrame
+global.cancelAnimationFrame = window.cancelAnimationFrame
