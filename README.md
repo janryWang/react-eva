@@ -44,8 +44,8 @@ const App = effectable(
  * 
  * const App = effectable(props=>{
  *    const [state,setState] = useState({text:''})
- *    getText = props.createAction('getText',()=>state.text)
- *    setText = props.createAction('setText',(text)=>setState({text}))
+ *    const getText = props.createAction('getText',()=>state.text)
+ *    const setText = props.createAction('setText',(text)=>setState({text}))
  * 
  *    return (
  *       <div className="sample">
