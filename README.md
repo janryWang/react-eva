@@ -5,11 +5,11 @@
 ### Usage
 
 ```jsx
-import React,{useState} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import { effectable,declareActions,createEffects } from 'react-pipe-effects'
 
-const App = effectable( //
+const App = effectable(
   class App extends React.Component {
     state = {
       text: ''
@@ -59,9 +59,6 @@ const App = effectable( //
  *       </div>
  *    )
  * })
- * 
- * 
- * 
  * 
  **/
 
