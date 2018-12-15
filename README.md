@@ -5,19 +5,19 @@
 ### Usage
 
 ```jsx
-import React from 'react'
+import React,{useState} from 'react'
 import ReactDOM from 'react-dom'
 import { effectable,declareActions,createEffects } from 'react-pipe-effects'
 
-const App = effectable()(
+const App = effectable( //
   class App extends React.Component {
     state = {
       text: ''
     }
 
-    getText = this.props.createStateAction('getText', () => this.state.text)
+    getText = this.props.createAction('getText', () => this.state.text)
 
-    setText = this.props.createStateAction('setText', text => {
+    setText = this.props.createAction('setText', text => {
       this.setState({
         text
       })
@@ -29,7 +29,7 @@ const App = effectable()(
           <div className="text">{this.state.text}</div>
           <button
             className="inner-btn"
-            {...this.props.createEffectSource('onClick')}
+            {...this.props.createEvents('onClick')}
           >
             button
           </button>
@@ -38,6 +38,32 @@ const App = effectable()(
     }
   }
 )
+
+/**
+ *  hooks style
+ * 
+ * const App = effectable(props=>{
+ *    const [state,setState] = useState({text:''})
+ *    getText = props.createAction('getText',()=>state.text)
+ *    setText = props.createAction('setText',(text)=>setState({text}))
+ * 
+ *    return (
+ *       <div className="sample">
+ *         <div className="text">{state.text}</div>
+ *         <button
+ *           className="inner-btn"
+ *           {...props.createEvents('onClick')}
+ *         >
+ *           button
+ *         </button>
+ *       </div>
+ *    )
+ * })
+ * 
+ * 
+ * 
+ * 
+ **/
 
 const actions = declareActions('setText')
 const effects = createEffects($ => {
@@ -58,7 +84,7 @@ ReactDOM.render(
 
 ### API
 
-**effectable(options : Object) : (Target : ReactComponent)=>ReactComponent**
+**effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent**
 
 The effectable's options
 
@@ -70,8 +96,8 @@ The target component will receive the following properties.
 
 | property name      | description                                                  | type     | params                                                |
 | ------------------ | ------------------------------------------------------------ | -------- | ----------------------------------------------------- |
-| createStateAction  | it used to create a state action method,and it will communicate with externally declared actions. | Function | `createStateAction(type : String,handler : Function)` |
-| createEffectSource | It is based on the dispatch function to create event callbacks in batches. | Function | `createEffectSource(...type : String)`                |
+| createAction  | it used to create a state action method,and it will communicate with externally declared actions. | Function | `createAction(type : String,handler : Function)` |
+| createEvents | It is based on the dispatch function to create event callbacks in batches. | Function | `createEvents(...type : String)`                |
 | dispatch           | It is used to dispatch custom events.                        | Function | `dispatch(type:String,..args : any)`                  |
 | subscription       | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                      |
 | subscribes         | It is the core object of event communication.                | Object   |                                                       |

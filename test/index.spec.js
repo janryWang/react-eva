@@ -13,9 +13,9 @@ const Sample = effectable()(
       text: ''
     }
 
-    getText = this.props.createStateAction('getText', () => this.state.text)
+    getText = this.props.createAction('getText', () => this.state.text)
 
-    setText = this.props.createStateAction('setText', text => {
+    setText = this.props.createAction('setText', text => {
       this.setState({
         text
       })
@@ -27,7 +27,7 @@ const Sample = effectable()(
           <div className="text">{this.state.text}</div>
           <button
             className="inner-btn"
-            {...this.props.createEffectSource('onClick')}
+            {...this.props.createEvents('onClick')}
           >
             button
           </button>
