@@ -15,12 +15,17 @@ const App = effectable(
       text: ''
     }
 
-    getText = this.props.createAction('getText', () => this.state.text)
+    getText = () => this.state.text
 
-    setText = this.props.createAction('setText', text => {
+    setText = text => {
       this.setState({
         text
       })
+    }
+
+    actions = this.props.createActions({
+      getText:this.getText,
+      setText:this.setText
     })
 
     render() {
@@ -44,9 +49,10 @@ const App = effectable(
  * 
  * const App = effectable(props=>{
  *    const [state,setState] = useState({text:''})
- *    const getText = props.createAction('getText',()=>state.text)
- *    const setText = props.createAction('setText',(text)=>setState({text}))
- * 
+ *    const actions = props.createActions({
+ *        getText:()=>state.text,
+ *        setText:text=>setState({text})
+ *    })
  *    return (
  *       <div className="sample">
  *         <div className="text">{state.text}</div>
@@ -93,7 +99,8 @@ The target component will receive the following properties.
 
 | property name      | description                                                  | type     | params                                                |
 | ------------------ | ------------------------------------------------------------ | -------- | ----------------------------------------------------- |
-| createAction  | it used to create a state action method,and it will communicate with externally declared actions. | Function | `createAction(type : String,handler : Function)` |
+| createAction  | it used to create a state action method,and it will communicate with externally declared actions. | 
+| createActions  | it used for batch create  state actions method,and it will communicate with externally declared actions. | Function | `createAction(type : String,handler : Function)` |
 | createEvents | It is based on the dispatch function to create event callbacks in batches. | Function | `createEvents(...type : String)`                |
 | dispatch           | It is used to dispatch custom events.                        | Function | `dispatch(type:String,..args : any)`                  |
 | subscription       | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                      |

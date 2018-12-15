@@ -65,6 +65,16 @@ export const effectable = options => {
         }
       }
 
+      createActions = obj => {
+        let actions = {}
+        for (let name in obj) {
+          if (obj.hasOwnProperty(name) && isFn(obj[name])) {
+            actions[name] = this.createAction(name, obj[name])
+          }
+        }
+        return actions
+      }
+
       createEvents = (...names) => {
         return names.reduce((buf, name) => {
           buf[name] = (...args) => {
@@ -85,6 +95,7 @@ export const effectable = options => {
           <Target
             {...this.props}
             createAction={this.createAction}
+            createActions={this.createActions}
             createEvents={this.createEvents}
             dispatch={this.dispatch}
             subscribes={this.subscribes}

@@ -1,6 +1,6 @@
 {
   "name": "react-pipe-effects",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "React distributed state management solution",
   "main": "lib/index.js",
   "scripts": {

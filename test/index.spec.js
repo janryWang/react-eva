@@ -13,22 +13,24 @@ const Sample = effectable()(
       text: ''
     }
 
-    getText = this.props.createAction('getText', () => this.state.text)
+    getText = () => this.state.text
 
-    setText = this.props.createAction('setText', text => {
+    setText = text => {
       this.setState({
         text
       })
+    }
+
+    actions = this.props.createActions({
+      getText:this.getText,
+      setText:this.setText
     })
 
     render() {
       return (
         <div className="sample">
           <div className="text">{this.state.text}</div>
-          <button
-            className="inner-btn"
-            {...this.props.createEvents('onClick')}
-          >
+          <button className="inner-btn" {...this.props.createEvents('onClick')}>
             button
           </button>
         </div>
@@ -47,9 +49,14 @@ test('simple', t => {
   const dom = mount(
     <div>
       <Sample actions={actions} effects={effects} />
-      <button className="outer-btn" onClick={()=>{
-        actions.setText('This is outer click')
-      }}>button</button>
+      <button
+        className="outer-btn"
+        onClick={() => {
+          actions.setText('This is outer click')
+        }}
+      >
+        button
+      </button>
     </div>
   )
   t.truthy(dom.find('.text').text() == '')
