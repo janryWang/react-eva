@@ -81,10 +81,9 @@ export const effectable = options => {
       }
 
       render() {
-        const { actions, effects, ...props } = this.props
         return (
           <Target
-            {...props}
+            {...this.props}
             createAction={this.createAction}
             createEvents={this.createEvents}
             dispatch={this.dispatch}
