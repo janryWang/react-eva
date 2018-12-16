@@ -77,8 +77,23 @@ export const effectable = options => {
 
       createEvents = (...names) => {
         return names.reduce((buf, name) => {
-          buf[name] = (...args) => {
-            this.dispatch(name, ...args)
+          if (typeof name === "object") {
+            for (let key in name) {
+              if (name.hasOwnProperty(key) && isFn(name[key])) {
+                buf[key] = (...args) => {
+                  let res = name[key](...args)
+                  if (res !== undefined) {
+                    this.dispatch(key, res)
+                  } else {
+                    this.dispatch(key, ...args)
+                  }
+                }
+              }
+            }
+          } else if (typeof name === "string") {
+            buf[name] = (...args) => {
+              this.dispatch(name, ...args)
+            }
           }
           return buf
         }, {})

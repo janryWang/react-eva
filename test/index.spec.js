@@ -25,6 +25,7 @@ const Sample = effectable()(
       getText:this.getText,
       setText:this.setText
     })
+    
 
     render() {
       return (
