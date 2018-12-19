@@ -42,20 +42,20 @@ const App = effectable(
 )
 
 
-const declaredActions = declareActions('setText')
+const actions = declareActions('setText')
 const effects = createEffects($ => {
   $('onClick').subscribe(() => {
-    declaredActions.setText('This is inner click')
+    actions.setText('This is inner click')
   })
 })
 
 ReactDOM.render(
   <div>
-    <App declaredActions={declaredActions} effects={effects} />
+    <App declaredActions={actions} effects={effects} />
     <button
       className="outer-btn"
       onClick={() => {
-        declaredActions.setText('This is outer click')
+        actions.setText('This is outer click')
       }}
     >
       button
