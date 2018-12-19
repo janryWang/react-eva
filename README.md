@@ -41,30 +41,6 @@ const App = effectable(
   }
 )
 
-/**
- *  hooks style
- *
- * const App = props=>{
- *    const [state,setState] = useState({text:''})
- *    const {handshakeActions,createEvents} = usePipeEffects(props)
- *    const actions = handshakeActions({
- *        getText:()=>state.text,
- *        setText:text=>setState({text})
- *    })
- *    return (
- *       <div className="sample">
- *         <div className="text">{state.text}</div>
- *         <button
- *           className="inner-btn"
- *           {...createEvents('onClick')}
- *         >
- *           button
- *         </button>
- *       </div>
- *    )
- * }
- *
- **/
 
 const actions = declareActions('setText')
 const effects = createEffects($ => {
@@ -90,7 +66,7 @@ ReactDOM.render(
 
 ### API
 
-**effectable(options : Object | ReactComponent) : (Target :
+**1. effectable(options : Object | ReactComponent) : (Target :
 ReactComponent)=>ReactComponent**
 
 The effectable's options
@@ -110,7 +86,7 @@ The target component will receive the following properties.
 | subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
 | subscribes       | It is the core object of event communication.                                                           | Object   |                                                     |
 
-**declareActions(...type : String) : Object**
+**2. declareActions(...type : String) : Object**
 
 It is used for batch declaration of state actions.
 
@@ -122,20 +98,6 @@ It is used to create a side-effect execution environment.
 **`<EffectProvider actions={actions : Object} effects={effects : Function}/>`**
 
 It is used for cross-node communication. like this.
-
-**`usePipeEffects({declaredActions:Object,effects:Function})`**
-
-It will return the following methods.
-
-| property name    | description                                                  | type     | params                                              |
-| ---------------- | ------------------------------------------------------------ | -------- | --------------------------------------------------- |
-| handshakeAction  | it used to create a state action method,and it will communicate with externally declared actions. |          |                                                     |
-| handshakeActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
-| createEvents     | It is based on the dispatch function to create event callbacks in batches. | Function | `createEvents(...type : String | Object)`           |
-| dispatch         | It is used to dispatch custom events.                        | Function | `dispatch(type:String,..args : any)`                |
-| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
-
-
 
 ```jsx
 const Effectable1 = effectable()(xxx)
@@ -151,6 +113,41 @@ ReactDOM.render(
     </EffectProvider>,
     mountNode
 )
+```
+
+**`3. usePipeEffects({declaredActions:Object,effects:Function})`**
+
+It will return the following methods.
+
+| property name    | description                                                                                             | type     | params                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| handshakeAction  | it used to create a state action method,and it will communicate with externally declared actions.       |          |                                                     |
+| handshakeActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| createEvents     | It is based on the dispatch function to create event callbacks in batches.                              | Function | `createEvents(...type : String | Object)`           |
+| dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
+| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
+
+**usecase**
+
+```jsx
+import { usePipeEffects } from 'react-pipe-effects'
+
+const App = props => {
+  const [state, setState] = useState({ text: '' })
+  const { handshakeActions, createEvents } = usePipeEffects(props)
+  const actions = handshakeActions({
+    getText: () => state.text,
+    setText: text => setState({ text })
+  })
+  return (
+    <div className="sample">
+      <div className="text">{state.text}</div>
+      <button className="inner-btn" {...createEvents('onClick')}>
+        button
+      </button>
+    </div>
+  )
+}
 ```
 
 ### Install
