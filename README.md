@@ -95,7 +95,7 @@ It is used for batch declaration of state actions.
 
 
 
-##### 3. `createEffects(callback : (\$ : (type : String, filter : Function)=>Observable)=>{}) : Function`
+##### 3. `createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function`
 
 It is used to create a side-effect execution environment.
 
@@ -117,9 +117,9 @@ It will return the following methods.
 ```jsx
 import { usePipeEffects } from 'react-pipe-effects'
 
-const App = props => {
+const App = ({declaredActions,effects}) => {
   const [state, setState] = useState({ text: '' })
-  const { handshakeActions, createEvents } = usePipeEffects(props)
+  const { handshakeActions, createEvents } = usePipeEffects({declaredActions,effects})
   const actions = handshakeActions({
     getText: () => state.text,
     setText: text => setState({ text })
