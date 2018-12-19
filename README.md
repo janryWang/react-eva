@@ -1,4 +1,4 @@
-# react-pipe-effects
+# react-xeffect
 
 > React distributed state management solution with rxjs.
 
@@ -7,7 +7,7 @@
 ```jsx
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { effectable, declareActions, createEffects } from 'react-pipe-effects'
+import { effectable, declareActions, createEffects } from 'react-xeffect'
 
 const App = effectable(
   class App extends React.Component {
@@ -115,7 +115,7 @@ It will return the following methods.
 **USECASE**
 
 ```jsx
-import { usePipeEffects } from 'react-pipe-effects'
+import { usePipeEffects } from 'react-xeffect'
 
 const App = ({declaredActions,effects}) => {
   const [state, setState] = useState({ text: '' })
@@ -138,7 +138,7 @@ const App = ({declaredActions,effects}) => {
 ### Install
 
 ```
-npm install --save react-pipe-effects
+npm install --save react-xeffect
 ```
 
 ### LICENSE

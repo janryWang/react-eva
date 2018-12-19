@@ -1,6 +1,6 @@
 {
-  "name": "react-pipe-effects",
-  "version": "2.0.0",
+  "name": "react-xeffect",
+  "version": "1.0.0",
   "description": "React distributed state management solution",
   "main": "lib/index.js",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/janryWang/react-jsx-props.git"
+    "url": "git+https://github.com/janryWang/react-xeffect.git"
   },
   "author": "janryWang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/janryWang/react-jsx-props/issues"
+    "url": "https://github.com/janryWang/react-xeffect/issues"
   },
-  "homepage": "https://github.com/janryWang/react-jsx-props#readme",
+  "homepage": "https://github.com/janryWang/react-xeffect#readme",
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
