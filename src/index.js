@@ -5,14 +5,6 @@ import { filter } from "rxjs/operators"
 
 const EffectsContext = React.createContext()
 
-const { Provider, Consumer } = EffectsContext
-
-export const EffectProvider = props => (
-  <Provider value={{ actions: props.actions, effects: props.effects }}>
-    {props.children}
-  </Provider>
-)
-
 const createEffectsManager = (declaredActions, effects, subscribes) => {
   subscribes = subscribes || {}
 
@@ -63,12 +55,21 @@ const createEffectsManager = (declaredActions, effects, subscribes) => {
   const handshakeAction = (name, fn) => {
     if (declaredActions) {
       if (name && isFn(fn)) {
-        if (declaredActions) {
-          declaredActions[name] = fn
-          return declaredActions[name]
+        if (Array.isArray(declaredActions)) {
+          let findedIndex = declaredActions.findIndex(
+            actions => !!actions[name]
+          )
+          if (findedIndex > -1) {
+            declaredActions[findedIndex][name] = fn
+          }
+        } else if (typeof declaredActions === "object") {
+          if (declaredActions[name]) {
+            declaredActions[name] = fn
+          }
         }
       }
     }
+    return fn
   }
 
   const handshakeActions = obj => {
@@ -115,7 +116,7 @@ export const effectable = options => {
           handshakeAction,
           handshakeActions
         } = createEffectsManager(
-          props.declareActions || props.actions,
+          props.declaredActions || props.actions,
           props.effects,
           props.subscribes
         )
@@ -134,9 +135,7 @@ export const effectable = options => {
           <Target
             {...this.props}
             handshakeAction={this.handshakeAction}
-            createAction={this.handshakeAction}
             handshakeActions={this.handshakeActions}
-            createActions={this.handshakeActions}
             createEvents={this.createEvents}
             dispatch={this.dispatch}
             subscribes={this.subscribes}
@@ -146,13 +145,7 @@ export const effectable = options => {
       }
     }
 
-    return props => (
-      <Consumer>
-        {({ actions, effects } = {}) => (
-          <Effect actions={actions} effects={effects} {...props} />
-        )}
-      </Consumer>
-    )
+    return Effect
   }
 
   return Target ? _class_(Target) : _class_
@@ -180,9 +173,7 @@ export const usePipeEffects = ({
 } = {}) => {
   const context = React.useContext(EffectsContext) || {}
 
-  declaredActions =
-    declaredActions || actions || context.declaredActions || context.actions
-  effects = effects || context.effects
+  declaredActions = declaredActions || actions
 
   return React.useMemo(() => {
     const manager = createEffectsManager(declaredActions, effects, subscribes)

@@ -100,31 +100,7 @@ It is used for batch declaration of state actions.
 It is used to create a side-effect execution environment.
 
 
-
-
-##### 4. `<EffectProvider actions={actions : Object} effects={effects : Function}/>`
-
-It is used for cross-node communication. like this.
-
-```jsx
-const Effectable1 = effectable()(xxx)
-const Effectable2 = effectable()(yyy)
-
-const actions = declareActions(...)
-const effects = createEffects(($)=>...)
-
-ReactDOM.render(
-    <EffectProvider actions={actions} effects={effects}>
-        <Effectable1/>// you don't need repeat pass the actions and effects
-        <Effectable2/>// you don't need repeat pass the actions and effects
-    </EffectProvider>,
-    mountNode
-)
-```
-
-
-
-##### 5. `usePipeEffects({declaredActions:Object,effects:Function})`
+##### 4. `usePipeEffects({declaredActions:Object,effects:Function})`
 
 It will return the following methods.
 
