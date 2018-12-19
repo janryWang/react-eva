@@ -66,8 +66,7 @@ ReactDOM.render(
 
 ### API
 
-##### 1. effectable(options : Object | ReactComponent) : (Target :
-ReactComponent)=>ReactComponent
+##### 1. effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent
 
 The effectable's options
 
@@ -90,8 +89,7 @@ The target component will receive the following properties.
 
 It is used for batch declaration of state actions.
 
-##### 3. createEffects(callback : (\$ : (type : String, filter :
-Function)=>Observable)=>{}) : Function
+##### 3. createEffects(callback : (\$ : (type : String, filter : Function)=>Observable)=>{}) : Function
 
 It is used to create a side-effect execution environment.
 
