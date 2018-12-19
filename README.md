@@ -66,7 +66,7 @@ ReactDOM.render(
 
 ### API
 
-##### 1. effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent
+##### 1. `effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent`
 
 The effectable's options
 
@@ -85,13 +85,22 @@ The target component will receive the following properties.
 | subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
 | subscribes       | It is the core object of event communication.                                                           | Object   |                                                     |
 
-##### 2. declareActions(...type : String) : Object
+
+
+
+##### 2. `declareActions(...type : String) : Object`
 
 It is used for batch declaration of state actions.
 
-##### 3. createEffects(callback : (\$ : (type : String, filter : Function)=>Observable)=>{}) : Function
+
+
+
+##### 3. `createEffects(callback : (\$ : (type : String, filter : Function)=>Observable)=>{}) : Function`
 
 It is used to create a side-effect execution environment.
+
+
+
 
 ##### 4. `<EffectProvider actions={actions : Object} effects={effects : Function}/>`
 
@@ -112,6 +121,8 @@ ReactDOM.render(
     mountNode
 )
 ```
+
+
 
 ##### 5. `usePipeEffects({declaredActions:Object,effects:Function})`
 
