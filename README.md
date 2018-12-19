@@ -100,7 +100,7 @@ It is used for batch declaration of state actions.
 It is used to create a side-effect execution environment.
 
 
-##### 4. `usePipeEffects({declaredActions:Object,effects:Function})`
+##### 4. `useXEffect({declaredActions:Object,effects:Function})`
 
 It will return the following methods.
 
@@ -115,11 +115,11 @@ It will return the following methods.
 **USECASE**
 
 ```jsx
-import { usePipeEffects } from 'react-xeffect'
+import { useXEffect } from 'react-xeffect'
 
 const App = ({declaredActions,effects}) => {
   const [state, setState] = useState({ text: '' })
-  const { handshakeActions, createEvents } = usePipeEffects({declaredActions,effects})
+  const { handshakeActions, createEvents } = useXEffect({declaredActions,effects})
   const actions = handshakeActions({
     getText: () => state.text,
     setText: text => setState({ text })

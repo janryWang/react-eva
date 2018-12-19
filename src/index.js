@@ -164,7 +164,7 @@ export const declareActions = (...names) => {
 
 export const createEffects = fn => fn
 
-export const usePipeEffects = ({
+export const useXEffect = ({
   declaredActions,
   actions,
   effects,
