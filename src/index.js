@@ -3,11 +3,92 @@ import { isFn } from "./utils"
 import { Subject } from "rxjs"
 import { filter } from "rxjs/operators"
 
-const { Provider, Consumer } = React.createContext()
+const EffectsContext = React.createContext()
+
+const { Provider, Consumer } = EffectsContext
 
 export const EffectProvider = props => (
-  <Provider actions={props.actions} effects={props.effects} />
+  <Provider value={{ actions: props.actions, effects: props.effects }}>
+    {props.children}
+  </Provider>
 )
+
+const createEffectsManager = (declaredActions, effects, subscribes) => {
+  subscribes = subscribes || {}
+
+  const subscription = () => {
+    if (isFn(effects)) {
+      effects((type, $filter) => {
+        if (!subscribes[type]) {
+          subscribes[type] = new Subject()
+        }
+        if (isFn($filter)) {
+          return subscribes[type].pipe(filter($filter))
+        }
+        return subscribes[type]
+      })
+    }
+  }
+
+  const dispatch = (type, ...args) => {
+    if (subscribes[type]) {
+      subscribes[type].next(...args)
+    }
+  }
+
+  const createEvents = (...names) => {
+    return names.reduce((buf, name) => {
+      if (typeof name === "object") {
+        for (let key in name) {
+          if (name.hasOwnProperty(key) && isFn(name[key])) {
+            buf[key] = (...args) => {
+              let res = name[key](...args)
+              if (res !== undefined) {
+                dispatch(key, res)
+              } else {
+                dispatch(key, ...args)
+              }
+            }
+          }
+        }
+      } else if (typeof name === "string") {
+        buf[name] = (...args) => {
+          dispatch(name, ...args)
+        }
+      }
+      return buf
+    }, {})
+  }
+
+  const handshakeAction = (name, fn) => {
+    if (declaredActions) {
+      if (name && isFn(fn)) {
+        if (declaredActions) {
+          declaredActions[name] = fn
+          return declaredActions[name]
+        }
+      }
+    }
+  }
+
+  const handshakeActions = obj => {
+    let actions = {}
+    for (let name in obj) {
+      if (obj.hasOwnProperty(name) && isFn(obj[name])) {
+        actions[name] = handshakeAction(name, obj[name])
+      }
+    }
+    return actions
+  }
+
+  return {
+    dispatch,
+    createEvents,
+    subscription,
+    handshakeAction,
+    handshakeActions
+  }
+}
 
 export const effectable = options => {
   let Target
@@ -26,82 +107,25 @@ export const effectable = options => {
     class Effect extends Component {
       constructor(props) {
         super(props)
-        this.initialize(props)
-      }
-
-      initialize(props) {
         this.subscribes = {}
+        const {
+          subscription,
+          dispatch,
+          createEvents,
+          handshakeAction,
+          handshakeActions
+        } = createEffectsManager(
+          props.declareActions || props.actions,
+          props.effects,
+          props.subscribes
+        )
+        this.handshakeAction = handshakeAction
+        this.handshakeActions = handshakeActions
+        this.subscription = subscription
+        this.dispatch = dispatch
+        this.createEvents = createEvents
         if (options.autoRun) {
-          this.runEffects(props)
-        }
-      }
-
-      runEffects(props) {
-        const { effects } = props || this.props
-        if (isFn(effects)) {
-          effects((type, $filter) => {
-            if (!this.subscribes[type]) {
-              this.subscribes[type] = new Subject()
-            }
-            if (isFn($filter)) {
-              return this.subscribes[type].pipe(filter($filter))
-            }
-            return this.subscribes[type]
-          })
-        }
-      }
-
-      subscription = () => {
-        this.runEffects()
-      }
-
-      createAction = (name, fn) => {
-        const { actions } = this.props
-        if (name && isFn(fn)) {
-          if (actions) {
-            actions[name] = fn
-            return actions[name]
-          }
-        }
-      }
-
-      createActions = obj => {
-        let actions = {}
-        for (let name in obj) {
-          if (obj.hasOwnProperty(name) && isFn(obj[name])) {
-            actions[name] = this.createAction(name, obj[name])
-          }
-        }
-        return actions
-      }
-
-      createEvents = (...names) => {
-        return names.reduce((buf, name) => {
-          if (typeof name === "object") {
-            for (let key in name) {
-              if (name.hasOwnProperty(key) && isFn(name[key])) {
-                buf[key] = (...args) => {
-                  let res = name[key](...args)
-                  if (res !== undefined) {
-                    this.dispatch(key, res)
-                  } else {
-                    this.dispatch(key, ...args)
-                  }
-                }
-              }
-            }
-          } else if (typeof name === "string") {
-            buf[name] = (...args) => {
-              this.dispatch(name, ...args)
-            }
-          }
-          return buf
-        }, {})
-      }
-
-      dispatch = (type, ...args) => {
-        if (this.subscribes[type]) {
-          this.subscribes[type].next(...args)
+          subscription()
         }
       }
 
@@ -109,8 +133,10 @@ export const effectable = options => {
         return (
           <Target
             {...this.props}
-            createAction={this.createAction}
-            createActions={this.createActions}
+            handshakeAction={this.handshakeAction}
+            createAction={this.handshakeAction}
+            handshakeActions={this.handshakeActions}
+            createActions={this.handshakeActions}
             createEvents={this.createEvents}
             dispatch={this.dispatch}
             subscribes={this.subscribes}
@@ -144,3 +170,25 @@ export const declareActions = (...names) => {
 }
 
 export const createEffects = fn => fn
+
+export const usePipeEffects = ({
+  declaredActions,
+  actions,
+  effects,
+  subscribes,
+  autoRun = true
+} = {}) => {
+  const context = React.useContext(EffectsContext) || {}
+
+  declaredActions =
+    declaredActions || actions || context.declaredActions || context.actions
+  effects = effects || context.effects
+
+  return React.useMemo(() => {
+    const manager = createEffectsManager(declaredActions, effects, subscribes)
+    if (autoRun) {
+      manager.subscription()
+    }
+    return manager
+  })
+}

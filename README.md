@@ -7,7 +7,7 @@
 ```jsx
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { effectable,declareActions,createEffects } from 'react-pipe-effects'
+import { effectable, declareActions, createEffects } from 'react-pipe-effects'
 
 const App = effectable(
   class App extends React.Component {
@@ -23,19 +23,16 @@ const App = effectable(
       })
     }
 
-    actions = this.props.createActions({
-      getText:this.getText,
-      setText:this.setText
+    actions = this.props.handshakeActions({
+      getText: this.getText,
+      setText: this.setText
     })
 
     render() {
       return (
         <div className="sample">
           <div className="text">{this.state.text}</div>
-          <button
-            className="inner-btn"
-            {...this.props.createEvents('onClick')}
-          >
+          <button className="inner-btn" {...this.props.createEvents('onClick')}>
             button
           </button>
         </div>
@@ -46,10 +43,11 @@ const App = effectable(
 
 /**
  *  hooks style
- * 
- * const App = effectable(props=>{
+ *
+ * const App = props=>{
  *    const [state,setState] = useState({text:''})
- *    const actions = props.createActions({
+ *    const {handshakeActions,createEvents} = usePipeEffects(props)
+ *    const actions = handshakeActions({
  *        getText:()=>state.text,
  *        setText:text=>setState({text})
  *    })
@@ -58,14 +56,14 @@ const App = effectable(
  *         <div className="text">{state.text}</div>
  *         <button
  *           className="inner-btn"
- *           {...props.createEvents('onClick')}
+ *           {...createEvents('onClick')}
  *         >
  *           button
  *         </button>
  *       </div>
  *    )
- * })
- * 
+ * }
+ *
  **/
 
 const actions = declareActions('setText')
@@ -78,16 +76,22 @@ const effects = createEffects($ => {
 ReactDOM.render(
   <div>
     <App actions={actions} effects={effects} />
-    <button className="outer-btn" onClick={()=>{
-      actions.setText('This is outer click')
-    }}>button</button>
+    <button
+      className="outer-btn"
+      onClick={() => {
+        actions.setText('This is outer click')
+      }}
+    >
+      button
+    </button>
   </div>
 )
 ```
 
 ### API
 
-**effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent**
+**effectable(options : Object | ReactComponent) : (Target :
+ReactComponent)=>ReactComponent**
 
 The effectable's options
 
@@ -97,52 +101,57 @@ The effectable's options
 
 The target component will receive the following properties.
 
-| property name      | description                                                  | type     | params                                                |
-| ------------------ | ------------------------------------------------------------ | -------- | ----------------------------------------------------- |
-| createAction  | it used to create a state action method,and it will communicate with externally declared actions. | 
-| createActions  | it used for batch create  state actions method,and it will communicate with externally declared actions. | Function | `createAction(type : String,handler : Function)` |
-| createEvents | It is based on the dispatch function to create event callbacks in batches. | Function | `createEvents(...type : String | Object)`                |
-| dispatch           | It is used to dispatch custom events.                        | Function | `dispatch(type:String,..args : any)`                  |
-| subscription       | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                      |
-| subscribes         | It is the core object of event communication.                | Object   |                                                       |
-
-
+| property name    | description                                                                                             | type     | params                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| handshakeAction  | it used to create a state action method,and it will communicate with externally declared actions.       |
+| handshakeActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| createEvents     | It is based on the dispatch function to create event callbacks in batches.                              | Function | `createEvents(...type : String | Object)`           |
+| dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
+| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
+| subscribes       | It is the core object of event communication.                                                           | Object   |                                                     |
 
 **declareActions(...type : String) : Object**
 
 It is used for batch declaration of state actions.
 
-
-
-**createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function**
+**createEffects(callback : (\$ : (type : String, filter :
+Function)=>Observable)=>{}) : Function**
 
 It is used to create a side-effect execution environment.
-
-
 
 **`<EffectProvider actions={actions : Object} effects={effects : Function}/>`**
 
 It is used for cross-node communication. like this.
+
+**`usePipeEffects({declaredActions:Object,effects:Function})`**
+
+It will return the following methods.
+
+| property name    | description                                                  | type     | params                                              |
+| ---------------- | ------------------------------------------------------------ | -------- | --------------------------------------------------- |
+| handshakeAction  | it used to create a state action method,and it will communicate with externally declared actions. |          |                                                     |
+| handshakeActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| createEvents     | It is based on the dispatch function to create event callbacks in batches. | Function | `createEvents(...type : String | Object)`           |
+| dispatch         | It is used to dispatch custom events.                        | Function | `dispatch(type:String,..args : any)`                |
+| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
+
+
 
 ```jsx
 const Effectable1 = effectable()(xxx)
 const Effectable2 = effectable()(yyy)
 
 const actions = declareActions(...)
-const effects = createEffects(($)=>...)                               
+const effects = createEffects(($)=>...)
 
-ReactDOM.render(                                
-    <EffectProvider actions={actions} effects={effects}>                                 
+ReactDOM.render(
+    <EffectProvider actions={actions} effects={effects}>
         <Effectable1/>// you don't need repeat pass the actions and effects
         <Effectable2/>// you don't need repeat pass the actions and effects
     </EffectProvider>,
     mountNode
 )
 ```
-
-
-
-
 
 ### Install
 
