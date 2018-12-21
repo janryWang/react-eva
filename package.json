@@ -1,0 +1,86 @@
+{
+  "name": "react-eva",
+  "version": "1.0.0",
+  "description": "React distributed state management solution",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": " cross-env NODE_ENV=test ava",
+    "build": "babel src --out-dir lib",
+    "precommit": "npm run build && lint-staged && npm run test  && git add -A"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/janryWang/react-eva.git"
+  },
+  "author": "janryWang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/janryWang/react-eva/issues"
+  },
+  "homepage": "https://github.com/janryWang/react-eva#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "ava": "^1.0.0-beta.4",
+    "cross-env": "^5.1.4",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "husky": "^0.14.3",
+    "jsdom": "12.0.0",
+    "jsdom-global": "3.0.2",
+    "lint-staged": "^4.3.0",
+    "prettier": "^1.11.x",
+    "qverse": "^0.1.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "lint-staged": {
+    "src/*.js": [
+      "prettier --write --tab-width 2 --no-semi",
+      "git add"
+    ],
+    "dist/*.js": [
+      "prettier --write --tab-width 2 --no-semi",
+      "git add"
+    ],
+    "test.js": [
+      "prettier --write --tab-width 2 --no-semi",
+      "git add"
+    ]
+  },
+  "ava": {
+    "require": [
+      "@babel/register",
+      "jsdom-global/register",
+      "raf/polyfill"
+    ],
+    "files": [
+      "test/**/*.spec.js",
+      "test/*.spec.js"
+    ],
+    "babel": {
+      "testOptions": {
+        "babelrc": false,
+        "presets": [
+          [
+            "@babel/preset-env",
+            {
+              "loose": true
+            }
+          ],
+          "@babel/preset-react"
+        ],
+        "plugins": [
+          "@babel/plugin-proposal-class-properties"
+        ]
+      }
+    }
+  },
+  "dependencies": {
+    "rxjs": "^6.3.3"
+  }
+}
