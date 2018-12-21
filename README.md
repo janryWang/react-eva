@@ -32,7 +32,7 @@ const App = connect(
       return (
         <div className="sample">
           <div className="text">{this.state.text}</div>
-          <button className="inner-btn" {...this.props.createEvents('onClick')}>
+          <button className="inner-btn" onClick={() => this.props.dispatch('onClick')}>
             button
           </button>
         </div>
@@ -75,8 +75,8 @@ The connect's options
 
 The target component will receive the following properties.
 
-| property name    | description                                                   | type     | params                                              |
-| ---------------- | --------------------------------------------------------------- | -------- | ---------------------- |
+| property name    | description                                                                                             | type     | params                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
 | implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
 | dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
 | subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
@@ -94,11 +94,11 @@ It is used to create a side-effect execution environment.
 
 It will return the following methods.
 
-| property name | description | type | params | 
-| ---------------- | ---------------- | ---------------- | ---------------- |
-|implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` | 
-| dispatch | It is used to dispatch custom events. | Function | `dispatch(type:String,..args : any)` | 
-| subscription | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()` |
+| property name    | description                                                                                             | type     | params                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
+| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
 
 **USECASE**
 
@@ -107,7 +107,7 @@ import { useEva } from 'react-eva'
 
 const App = ({ actions, effects }) => {
   const [state, setState] = useState({ text: '' })
-  const { implementActions, createEvents } = useEva({ actions, effects })
+  const { implementActions, dispatch } = useEva({ actions, effects })
   const actions = implementActions({
     getText: () => state.text,
     setText: text => setState({ text })
@@ -115,7 +115,7 @@ const App = ({ actions, effects }) => {
   return (
     <div className="sample">
       <div className="text">{state.text}</div>
-      <button className="inner-btn" {...createEvents('onClick')}>
+      <button className="inner-btn" onClick={() => dispatch('onClick')}>
         button
       </button>
     </div>
