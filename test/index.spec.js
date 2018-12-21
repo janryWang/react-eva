@@ -4,15 +4,15 @@ import React from 'react'
 import Enzyme, { mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
 import {
-  effectable,
+  connect,
   createEffects,
-  declareActions,
+  createActions,
   usePipeEffects
 } from '../src'
 
 Enzyme.configure({ adapter: new Adapter() })
 
-const Sample = effectable()(
+const Sample = connect()(
   class Sample extends React.Component {
     state = {
       text: ''
@@ -70,7 +70,7 @@ const Sample2 = props => {
 }
 
 test('simple', t => {
-  const actions = declareActions('setText')
+  const actions = createActions('setText')
   const effects = createEffects($ => {
     $('onClick').subscribe(() => {
       actions.setText('This is inner click')
@@ -99,7 +99,7 @@ test('simple', t => {
 /*
 can not write test case.
 test('hooks', t => {
-  const actions = declareActions('setText')
+  const actions = createActions('setText')
   const effects = createEffects($ => {
     $('onClick').subscribe(() => {
       actions.setText('This is inner click')

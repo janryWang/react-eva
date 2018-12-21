@@ -7,9 +7,9 @@
 ```jsx
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { effectable, declareActions, createEffects } from 'react-xeffect'
+import { connect, createActions, createEffects } from 'react-xeffect'
 
-const App = effectable(
+const App = connect(
   class App extends React.Component {
     state = {
       text: ''
@@ -42,7 +42,7 @@ const App = effectable(
 )
 
 
-const actions = declareActions('setText')
+const actions = createActions('setText')
 const effects = createEffects($ => {
   $('onClick').subscribe(() => {
     actions.setText('This is inner click')
@@ -51,7 +51,7 @@ const effects = createEffects($ => {
 
 ReactDOM.render(
   <div>
-    <App declaredActions={actions} effects={effects} />
+    <App actions={actions} effects={effects} />
     <button
       className="outer-btn"
       onClick={() => {
@@ -66,9 +66,9 @@ ReactDOM.render(
 
 ### API
 
-##### 1. `effectable(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent`
+##### 1. `connect(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent`
 
-The effectable's options
+The connect's options
 
 | property name | description                              | type    |
 | ------------- | ---------------------------------------- | ------- |
@@ -88,7 +88,7 @@ The target component will receive the following properties.
 
 
 
-##### 2. `declareActions(...type : String) : Object`
+##### 2. `createActions(...type : String) : Object`
 
 It is used for batch declaration of state actions.
 
@@ -100,7 +100,7 @@ It is used for batch declaration of state actions.
 It is used to create a side-effect execution environment.
 
 
-##### 4. `useXEffect({declaredActions:Object,effects:Function})`
+##### 4. `useXEffect({actions:Object,effects:Function})`
 
 It will return the following methods.
 
@@ -117,9 +117,9 @@ It will return the following methods.
 ```jsx
 import { useXEffect } from 'react-xeffect'
 
-const App = ({declaredActions,effects}) => {
+const App = ({actions,effects}) => {
   const [state, setState] = useState({ text: '' })
-  const { handshakeActions, createEvents } = useXEffect({declaredActions,effects})
+  const { handshakeActions, createEvents } = useXEffect({actions,effects})
   const actions = handshakeActions({
     getText: () => state.text,
     setText: text => setState({ text })

@@ -5,7 +5,7 @@ import { filter } from "rxjs/operators"
 
 const EffectsContext = React.createContext()
 
-const createEffectsManager = (declaredActions, effects, subscribes) => {
+const createEffectsManager = (actions, effects, subscribes) => {
   subscribes = subscribes || {}
 
   const subscription = () => {
@@ -53,18 +53,16 @@ const createEffectsManager = (declaredActions, effects, subscribes) => {
   }
 
   const handshakeAction = (name, fn) => {
-    if (declaredActions) {
+    if (actions) {
       if (name && isFn(fn)) {
-        if (Array.isArray(declaredActions)) {
-          let findedIndex = declaredActions.findIndex(
-            actions => !!actions[name]
-          )
+        if (Array.isArray(actions)) {
+          let findedIndex = actions.findIndex(actions => !!actions[name])
           if (findedIndex > -1) {
-            declaredActions[findedIndex][name] = fn
+            actions[findedIndex][name] = fn
           }
-        } else if (typeof declaredActions === "object") {
-          if (declaredActions[name]) {
-            declaredActions[name] = fn
+        } else if (typeof actions === "object") {
+          if (actions[name]) {
+            actions[name] = fn
           }
         }
       }
@@ -91,7 +89,7 @@ const createEffectsManager = (declaredActions, effects, subscribes) => {
   }
 }
 
-export const effectable = options => {
+export const connect = options => {
   let Target
   let defaultOptions = {
     autoRun: true
@@ -115,11 +113,7 @@ export const effectable = options => {
           createEvents,
           handshakeAction,
           handshakeActions
-        } = createEffectsManager(
-          props.declaredActions || props.actions,
-          props.effects,
-          props.subscribes
-        )
+        } = createEffectsManager(props.actions, props.effects, props.subscribes)
         this.handshakeAction = handshakeAction
         this.handshakeActions = handshakeActions
         this.subscription = subscription
@@ -151,7 +145,7 @@ export const effectable = options => {
   return Target ? _class_(Target) : _class_
 }
 
-export const declareActions = (...names) => {
+export const createActions = (...names) => {
   return names.reduce((buf, name) => {
     buf[name] = () => {
       if (console && console.error) {
@@ -165,7 +159,6 @@ export const declareActions = (...names) => {
 export const createEffects = fn => fn
 
 export const useXEffect = ({
-  declaredActions,
   actions,
   effects,
   subscribes,
@@ -173,10 +166,8 @@ export const useXEffect = ({
 } = {}) => {
   const context = React.useContext(EffectsContext) || {}
 
-  declaredActions = declaredActions || actions
-
   return React.useMemo(() => {
-    const manager = createEffectsManager(declaredActions, effects, subscribes)
+    const manager = createEffectsManager(actions, effects, subscribes)
     if (autoRun) {
       manager.subscription()
     }
