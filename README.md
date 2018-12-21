@@ -59,7 +59,8 @@ ReactDOM.render(
     >
       button
     </button>
-  </div>
+  </div>,
+  mountNode
 )
 ```
 
