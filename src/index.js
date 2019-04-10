@@ -86,8 +86,11 @@ class ActionFactory {
 
     this[implementSymbol] = (name, fn) => {
       if (resolvers[name] && resolvers[name].length) {
-        const { resolve, args } = resolvers[name].pop()
-        resolve(fn(...args))
+        for(let i = resolvers[name].length - 1;i>=0;i--){
+          const { resolve, args } = resolvers[name][i]
+          resolve(fn(...args))
+        }
+        resolvers[name].length = 0
       } else {
         actions[name] = fn
       }
