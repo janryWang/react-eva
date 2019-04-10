@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import { Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
-const EvaContext = React.createContext()
-
 const isFn = val => typeof val === 'function'
 
 const createEva = (actions, effects, subscribes) => {
@@ -115,8 +113,10 @@ export const connect = options => {
 }
 
 export const createActions = (...names) => {
+  const actions = {}
   return names.reduce((buf, name) => {
-    buf[name] = () => {
+    buf[name] = (...args) => {
+      if(actions[name]) return actions[name](...args)
       if (console && console.error) {
         console.error(`The action "${name}" is not implemented!`)
       }
@@ -133,8 +133,6 @@ export const useEva = ({
   subscribes,
   autoRun = true
 } = {}) => {
-  const context = React.useContext(EffectsContext) || {}
-
   return React.useMemo(() => {
     const manager = createEva(actions, effects, subscribes)
     if (autoRun) {
