@@ -4,6 +4,10 @@ import { filter } from 'rxjs/operators'
 
 const isFn = val => typeof val === 'function'
 
+const implementSymbol = Symbol('__IMPLEMENT__')
+
+const namesSymbol = Symbol('__NAMES__')
+
 const createEva = (actions, effects, subscribes) => {
   subscribes = subscribes || {}
 
@@ -28,19 +32,8 @@ const createEva = (actions, effects, subscribes) => {
   }
 
   const implementAction = (name, fn) => {
-    if (actions) {
-      if (name && isFn(fn)) {
-        if (Array.isArray(actions)) {
-          let findedIndex = actions.findIndex(actions => !!actions[name])
-          if (findedIndex > -1) {
-            actions[findedIndex][name] = fn
-          }
-        } else if (typeof actions === 'object') {
-          if (actions[name]) {
-            actions[name] = fn
-          }
-        }
-      }
+    if (actions && actions[implementSymbol]) {
+      actions[implementSymbol](name, fn)
     }
     return fn
   }
@@ -59,6 +52,47 @@ const createEva = (actions, effects, subscribes) => {
     dispatch,
     subscription,
     implementActions
+  }
+}
+
+class ActionFactory {
+  constructor(names, isAsync = true) {
+    const resolvers = {}
+    const actions = {}
+    names.forEach(name => {
+      this[name] = (...args) => {
+        if (isAsync) {
+          return new Promise((resolve, reject) => {
+            if (actions[name]) {
+              resolve(actions[name](...args))
+            } else {
+              resolvers[name] = resolvers[name] || []
+              resolvers[name].push({ resolve, args, reject })
+            }
+          })
+        } else {
+          if (actions[name]) {
+            return actions[name](...args)
+          } else {
+            if (console && console.error) {
+              console.error(`The action "${name}" is not implemented!`)
+            }
+          }
+        }
+      }
+    })
+
+    this[namesSymbol] = names
+
+    this[implementSymbol] = (name, fn) => {
+      if (resolvers[name] && resolvers[name].length) {
+        const { resolve, args } = resolvers[name].pop()
+        resolve(fn(...args))
+      } else {
+        actions[name] = fn
+      }
+      return fn
+    }
   }
 }
 
@@ -112,17 +146,33 @@ export const connect = options => {
   return Target ? _class_(Target) : _class_
 }
 
-export const createActions = (...names) => {
-  const actions = {}
-  return names.reduce((buf, name) => {
-    buf[name] = (...args) => {
-      if(actions[name]) return actions[name](...args)
-      if (console && console.error) {
-        console.error(`The action "${name}" is not implemented!`)
+export const createActions = (...names) => new ActionFactory(names, false)
+
+export const createAsyncActions = (...names) => new ActionFactory(names, true)
+
+export const mergeActions = (...all)=>{
+  const implement = (name,fn)=>{
+    all.forEach((actions)=>{
+      if(actions[implementSymbol] && actions[namesSymbol].indexOf(name) > -1){
+        actions[implementSymbol](name,fn)
+      }
+    })
+    return fn
+  }
+  const result = {}
+  for(let i=0;i<all.length;i++){
+    let actions = all[i]
+    result[namesSymbol] = result[namesSymbol] || []
+    result[namesSymbol] = result[namesSymbol].concat(actions[namesSymbol])
+    let key
+    for(key in actions){
+      if(actions.hasOwnProperty(key) && key !== implementSymbol && key !== namesSymbol){
+        result[key] = actions[key]
       }
     }
-    return buf
-  }, {})
+  }
+  result[implementSymbol] = implement
+  return result
 }
 
 export const createEffects = fn => fn

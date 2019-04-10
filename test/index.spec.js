@@ -76,7 +76,7 @@ test('simple', t => {
   })
   const dom = mount(
     <div>
-      <Sample actions={[actions]} effects={effects} />
+      <Sample actions={actions} effects={effects} />
       <button
         className="outer-btn"
         onClick={() => {

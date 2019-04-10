@@ -78,26 +78,44 @@ The target component will receive the following properties.
 
 | property name    | description                                                                                             | type     | params                                              |
 | ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
-| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `implementAction(type : String,handler : Function)` |
 | dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
 | subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
 | subscribes       | It is the core object of event communication.                                                           | Object   |                                                     |
 
+The output component will receive the following properties.
+
+| property name | description                                                  | type     | params                                                       |
+| ------------- | ------------------------------------------------------------ | -------- | ------------------------------------------------------------ |
+| actions       | This property is designed to internal and external communication of components. | Object   |                                                              |
+| effects       | This property is designed to handle the side effects of components. | Function | `effects(callback : ($ : (type : String, filter : Function)=>Observable)=>{})` |
+
+
 ##### 2. `createActions(...type : String) : Object`
 
 It is used for batch declaration of state actions.
+(Note: The success of calling actions is that the component has been rendered.)
 
-##### 3. `createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function`
+##### 3. `createAsyncActions(...type : String) : Object`
+
+It is used for batch declaration of state actions.
+(Note: All methods will return a Promise object, and we don't have to wait for the component to render completed when we call actions.)
+
+##### 3. `mergeActions(...actions : Object) : Object`
+
+It is used for merge multi actions.
+
+##### 4. `createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function`
 
 It is used to create a side-effect execution environment.
 
-##### 4. `useEva({actions:Object,effects:Function})`
+##### 5. `useEva({actions:Object,effects:Function})`
 
 It will return the following methods.
 
 | property name    | description                                                                                             | type     | params                                              |
 | ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
-| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `handshakeAction(type : String,handler : Function)` |
+| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `implementAction(type : String,handler : Function)` |
 | dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
 | subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
 
