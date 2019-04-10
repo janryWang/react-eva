@@ -2,6 +2,10 @@
 
 > React distributed state management solution.
 
+### Demo
+
+https://codesandbox.io/s/0pk3mlmwrn
+
 ### Usage
 
 ```jsx
