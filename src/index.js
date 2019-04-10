@@ -86,7 +86,7 @@ class ActionFactory {
 
     this[implementSymbol] = (name, fn) => {
       if (resolvers[name] && resolvers[name].length) {
-        for(let i = resolvers[name].length - 1;i>=0;i--){
+        for (let i = 0; i < resolvers[name].length; i++) {
           const { resolve, args } = resolvers[name][i]
           resolve(fn(...args))
         }
@@ -153,23 +153,27 @@ export const createActions = (...names) => new ActionFactory(names, false)
 
 export const createAsyncActions = (...names) => new ActionFactory(names, true)
 
-export const mergeActions = (...all)=>{
-  const implement = (name,fn)=>{
-    all.forEach((actions)=>{
-      if(actions[implementSymbol] && actions[namesSymbol].indexOf(name) > -1){
-        actions[implementSymbol](name,fn)
+export const mergeActions = (...all) => {
+  const implement = (name, fn) => {
+    all.forEach(actions => {
+      if (actions[implementSymbol] && actions[namesSymbol].indexOf(name) > -1) {
+        actions[implementSymbol](name, fn)
       }
     })
     return fn
   }
   const result = {}
-  for(let i=0;i<all.length;i++){
+  for (let i = 0; i < all.length; i++) {
     let actions = all[i]
     result[namesSymbol] = result[namesSymbol] || []
     result[namesSymbol] = result[namesSymbol].concat(actions[namesSymbol])
     let key
-    for(key in actions){
-      if(actions.hasOwnProperty(key) && key !== implementSymbol && key !== namesSymbol){
+    for (key in actions) {
+      if (
+        actions.hasOwnProperty(key) &&
+        key !== implementSymbol &&
+        key !== namesSymbol
+      ) {
         result[key] = actions[key]
       }
     }
