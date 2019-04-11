@@ -86,11 +86,13 @@ class ActionFactory {
 
     this[implementSymbol] = (name, fn) => {
       if (resolvers[name] && resolvers[name].length) {
-        for (let i = 0; i < resolvers[name].length; i++) {
-          const { resolve, args } = resolvers[name][i]
-          resolve(fn(...args))
-        }
-        resolvers[name].length = 0
+        setTimeout(() => {
+          for (let i = 0; i < resolvers[name].length; i++) {
+            const { resolve, args } = resolvers[name][i]
+            resolve(fn(...args))
+          }
+          resolvers[name].length = 0
+        })
       } else {
         actions[name] = fn
       }
