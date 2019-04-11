@@ -93,9 +93,8 @@ class ActionFactory {
           }
           resolvers[name].length = 0
         })
-      } else {
-        actions[name] = fn
       }
+      actions[name] = fn
       return fn
     }
   }
