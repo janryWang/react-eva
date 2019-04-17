@@ -1,6 +1,20 @@
-# react-eva
+# React EVA
 
-> React distributed state management solution.
+> Effects+View+Actions(React distributed state management solution with rxjs.)
+
+### Features
+- Learning easier
+- Smaller than reudx
+- Faster than one-way data stream
+- More elegant than react ref
+- Safer than react ref
+- Support React Hooks
+
+### Install
+
+```
+npm install --save react-eva
+```
 
 ### Demo
 
@@ -8,69 +22,45 @@ https://codesandbox.io/s/0pk3mlmwrn
 
 ### Usage
 
+
 ```jsx
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { connect, createActions, createEffects } from 'react-eva'
+import { useEva } from 'react-eva'
 
-const App = connect(
-  class App extends React.Component {
-    state = {
-      text: ''
-    }
-
-    getText = () => this.state.text
-
-    setText = text => {
-      this.setState({
-        text
-      })
-    }
-
-    actions = this.props.implementActions({
-      getText: this.getText,
-      setText: this.setText
-    })
-
-    render() {
-      return (
-        <div className="sample">
-          <div className="text">{this.state.text}</div>
-          <button className="inner-btn" onClick={() => this.props.dispatch('onClick')}>
-            button
-          </button>
-        </div>
-      )
-    }
-  }
-)
-
-const actions = createActions('setText')
-const effects = createEffects($ => {
-  $('onClick').subscribe(() => {
-    actions.setText('This is inner click')
+const App = ({ actions, effects }) => {
+  const [state, setState] = useState({ text: '' })
+  const { implementActions, dispatch } = useEva({ actions, effects })
+  const actions = implementActions({
+    getText: () => state.text,
+    setText: text => setState({ text })
   })
-})
-
-ReactDOM.render(
-  <div>
-    <App actions={actions} effects={effects} />
-    <button
-      className="outer-btn"
-      onClick={() => {
-        actions.setText('This is outer click')
-      }}
-    >
-      button
-    </button>
-  </div>,
-  mountNode
-)
+  return (
+    <div className="sample">
+      <div className="text">{state.text}</div>
+      <button className="inner-btn" onClick={() => dispatch('onClick')}>
+        button
+      </button>
+    </div>
+  )
+}
 ```
+
 
 ### API
 
-##### 1. `connect(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent`
+
+##### 1. `useEva({actions:Object,effects:Function})`
+
+It will return the following methods.
+
+| property name    | description                                                                                             | type     | params                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
+| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `implementAction(type : String,handler : Function)` |
+| dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
+| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
+
+
+
+##### 2. `connect(options : Object | ReactComponent) : (Target : ReactComponent)=>ReactComponent`
 
 The connect's options
 
@@ -95,62 +85,25 @@ The output component will receive the following properties.
 | effects       | This property is designed to handle the side effects of components. | Function | `effects(callback : ($ : (type : String, filter : Function)=>Observable)=>{})` |
 
 
-##### 2. `createActions(...type : String) : Object`
+##### 3. `createActions(...type : String) : Object`
 
 It is used for batch declaration of state actions.
 (Note: The success of calling actions is that the component has been rendered.)
 
-##### 3. `createAsyncActions(...type : String) : Object`
+##### 4. `createAsyncActions(...type : String) : Object`
 
 It is used for batch declaration of state actions.
 (Note: All methods will return a Promise object, and we don't have to wait for the component to render completed when we call actions.)
 
-##### 3. `mergeActions(...actions : Object) : Object`
+##### 5. `mergeActions(...actions : Object) : Object`
 
 It is used for merge multi actions.
 
-##### 4. `createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function`
+##### 6. `createEffects(callback : ($ : (type : String, filter : Function)=>Observable)=>{}) : Function`
 
 It is used to create a side-effect execution environment.
 
-##### 5. `useEva({actions:Object,effects:Function})`
 
-It will return the following methods.
-
-| property name    | description                                                                                             | type     | params                                              |
-| ---------------- | ------------------------------------------------------------------------------------------------------- | -------- | --------------------------------------------------- |
-| implementActions | it used for batch create state actions method,and it will communicate with externally declared actions. | Function | `implementAction(type : String,handler : Function)` |
-| dispatch         | It is used to dispatch custom events.                                                                   | Function | `dispatch(type:String,..args : any)`                |
-| subscription     | It is used to perform side-effect logic.If you set autoRun to false, then you need to call it manually. | Function | `subscription()`                                    |
-
-**USECASE**
-
-```jsx
-import { useEva } from 'react-eva'
-
-const App = ({ actions, effects }) => {
-  const [state, setState] = useState({ text: '' })
-  const { implementActions, dispatch } = useEva({ actions, effects })
-  const actions = implementActions({
-    getText: () => state.text,
-    setText: text => setState({ text })
-  })
-  return (
-    <div className="sample">
-      <div className="text">{state.text}</div>
-      <button className="inner-btn" onClick={() => dispatch('onClick')}>
-        button
-      </button>
-    </div>
-  )
-}
-```
-
-### Install
-
-```
-npm install --save react-eva
-```
 
 ### LICENSE
 
