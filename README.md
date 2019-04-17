@@ -20,32 +20,44 @@ In the long process of practice, we found that the one-way data flow management 
 npm install --save react-eva
 ```
 
-### Demo
-
-https://codesandbox.io/s/0pk3mlmwrn
-
 ### Usage
-
-
+https://codesandbox.io/s/lr68qp453q
 ```jsx
-import { useEva } from 'react-eva'
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
+import { useEva, createAsyncActions, createEffects } from "react-eva";
 
 const App = ({ actions, effects }) => {
-  const [state, setState] = useState({ text: '' })
-  const { implementActions, dispatch } = useEva({ actions, effects })
-  const actions = implementActions({
+  const [state, setState] = useState({ text: "default" });
+  const { implementActions, dispatch } = useEva({ actions, effects });
+  implementActions({
     getText: () => state.text,
     setText: text => setState({ text })
-  })
+  });
   return (
     <div className="sample">
       <div className="text">{state.text}</div>
-      <button className="inner-btn" onClick={() => dispatch('onClick')}>
+      <button className="inner-btn" onClick={() => dispatch("onClick")}>
         button
       </button>
     </div>
-  )
-}
+  );
+};
+
+const actions = createAsyncActions("getText", "setText");
+
+const effects = createEffects(async $ => {
+  console.log(await actions.getText());
+  $("onClick").subscribe(() => {
+    actions.setText("hello world");
+  });
+});
+
+ReactDOM.render(
+  <App actions={actions} effects={effects} />,
+  document.getElementById("root")
+);
+
 ```
 
 
