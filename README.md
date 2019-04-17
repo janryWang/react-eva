@@ -9,9 +9,9 @@ In the long process of practice, we found that the one-way data flow management 
 ### Features
 - Learning easier
 - Smaller than reudx
-- Faster than one-way data stream
+- Faster than one-way data stream, Because when we manage the state distribution, the entire React tree will not be fully redrawn due to a state change.
 - More elegant than react ref
-- Safer than react ref
+- Safer than react ref, Because the traditional way to use the React Ref API is to make it easy for users to access private methods, which is not a problem with React EVA.
 - Support React Hooks
 
 ### Install
