@@ -2,6 +2,10 @@
 
 > Effects+View+Actions(React distributed state management solution with rxjs.)
 
+### Background
+
+In the long process of practice, we found that the one-way data flow management application state may not be a silver bullet.so we can change the way to make React faster.
+
 ### Features
 - Learning easier
 - Smaller than reudx
