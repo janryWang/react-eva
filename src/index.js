@@ -197,5 +197,5 @@ export const useEva = ({
       manager.subscription()
     }
     return manager
-  })
+  }, [])
 }
