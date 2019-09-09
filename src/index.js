@@ -1,12 +1,12 @@
-import React, { Component } from 'react'
-import { Subject } from 'rxjs/internal/Subject'
-import { filter } from 'rxjs/internal/operators/filter'
+import React, { Component } from "react"
+import { Subject } from "rxjs/internal/Subject"
+import { filter } from "rxjs/internal/operators/filter"
 
-const isFn = val => typeof val === 'function'
+const isFn = val => typeof val === "function"
 
-const implementSymbol = Symbol('__IMPLEMENT__')
+const implementSymbol = Symbol("__IMPLEMENT__")
 
-const namesSymbol = Symbol('__NAMES__')
+const namesSymbol = Symbol("__NAMES__")
 
 const createEva = (actions, effects, subscribes) => {
   subscribes = subscribes || {}
@@ -28,6 +28,12 @@ const createEva = (actions, effects, subscribes) => {
   const dispatch = (type, ...args) => {
     if (subscribes[type]) {
       subscribes[type].next(...args)
+    }
+  }
+
+  dispatch.lazy = (type, fn) => {
+    if (subscribes[type] && isFn(fn)) {
+      subscribes[type].next(fn())
     }
   }
 
@@ -74,8 +80,12 @@ class ActionFactory {
           if (actions[name]) {
             return actions[name](...args)
           } else {
+            resolvers[name] = resolvers[name] || []
+            resolvers[name].push({ resolve, args, reject })
             if (console && console.error) {
-              console.error(`The action "${name}" is not implemented!`)
+              console.error(
+                `The action "${name}" is not implemented! We recommend that you call this method by \`createAscyncActions\``
+              )
             }
           }
         }

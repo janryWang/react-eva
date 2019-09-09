@@ -1,6 +1,6 @@
 {
-  "name": "react-eva",
-  "version": "1.1.5",
+  "name": "reva",
+  "version": "1.1.6",
   "description": "React distributed state management solution",
   "main": "lib/index.js",
   "scripts": {
