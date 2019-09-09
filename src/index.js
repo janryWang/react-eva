@@ -81,7 +81,7 @@ class ActionFactory {
             return actions[name](...args)
           } else {
             resolvers[name] = resolvers[name] || []
-            resolvers[name].push({ resolve, args, reject })
+            resolvers[name].push({ resolve: null, args, reject: null })
             if (console && console.error) {
               console.error(
                 `The action "${name}" is not implemented! We recommend that you call this method by \`createAscyncActions\``
@@ -99,7 +99,10 @@ class ActionFactory {
         setTimeout(() => {
           for (let i = 0; i < resolvers[name].length; i++) {
             const { resolve, args } = resolvers[name][i]
-            resolve(fn(...args))
+            if (resolve) resolve(fn(...args))
+            else {
+              fn(...args)
+            }
           }
           resolvers[name].length = 0
         })
