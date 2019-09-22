@@ -4,9 +4,9 @@ import { filter } from "rxjs/internal/operators/filter"
 
 const isFn = val => typeof val === "function"
 
-const implementSymbol = Symbol("__IMPLEMENT__")
+const implementSymbol = Symbol.for("__REVA_IMPLEMENT__")
 
-const namesSymbol = Symbol("__NAMES__")
+const namesSymbol = Symbol.for("__REVA_NAMES__")
 
 const createEva = (actions, effects, subscribes) => {
   subscribes = subscribes || {}
