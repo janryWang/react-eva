@@ -67,6 +67,18 @@ const Sample2 = props => {
   )
 }
 
+test('indicator', t => {
+  const actions = createActions('setText')
+  t.truthy(actions._isEvaActions === true)
+  const dom = mount(
+    <div>
+      <Sample actions={actions} />
+    </div>
+  )
+
+  t.truthy(actions._isEvaActions === true)
+})
+
 test('simple', t => {
   const actions = createActions('setText')
   const effects = createEffects($ => {

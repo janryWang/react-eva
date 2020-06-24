@@ -92,6 +92,7 @@ class ActionFactory {
       }
     })
 
+    this._isEvaActions = true
     this[namesSymbol] = names
 
     this[implementSymbol] = (name, fn) => {
