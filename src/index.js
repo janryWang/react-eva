@@ -6,7 +6,7 @@ const isFn = val => typeof val === "function"
 
 const implementSymbol = Symbol.for("__REVA_IMPLEMENT__")
 const namesSymbol = Symbol.for("__REVA_NAMES__")
-const actionSymbol = Symbol.for("__EVA_ACTIONS")
+const actionsSymbol = Symbol.for("__REVA_ACTIONS")
 
 const createEva = (actions, effects, subscribes) => {
   subscribes = subscribes || {}
@@ -92,7 +92,7 @@ class ActionFactory {
       }
     })
 
-    this[actionSymbol] = true
+    this[actionsSymbol] = true
     this[namesSymbol] = names
 
     this[implementSymbol] = (name, fn) => {
