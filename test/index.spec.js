@@ -69,14 +69,15 @@ const Sample2 = props => {
 
 test('indicator', t => {
   const actions = createActions('setText')
-  t.truthy(actions._isEvaActions === true)
+  const actionSymbol = Symbol.for("__EVA_ACTIONS")
+  t.truthy(actions[actionSymbol] === true)
   const dom = mount(
     <div>
       <Sample actions={actions} />
     </div>
   )
 
-  t.truthy(actions._isEvaActions === true)
+  t.truthy(actions[actionSymbol] === true)
 })
 
 test('simple', t => {
