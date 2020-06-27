@@ -67,6 +67,19 @@ const Sample2 = props => {
   )
 }
 
+test('indicator', t => {
+  const actions = createActions('setText')
+  const actionsSymbol = Symbol.for("__REVA_ACTIONS")
+  t.truthy(actions[actionsSymbol] === true)
+  const dom = mount(
+    <div>
+      <Sample actions={actions} />
+    </div>
+  )
+
+  t.truthy(actions[actionsSymbol] === true)
+})
+
 test('simple', t => {
   const actions = createActions('setText')
   const effects = createEffects($ => {
