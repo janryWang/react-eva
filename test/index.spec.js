@@ -3,7 +3,7 @@ import './polyfill'
 import React from 'react'
 import Enzyme, { mount } from 'enzyme'
 import Adapter from 'enzyme-adapter-react-16'
-import { connect, createEffects, createActions, useEva } from '../src'
+import { connect, createEffects, createActions, mergeActions, useEva } from '../src'
 
 Enzyme.configure({ adapter: new Adapter() })
 
@@ -78,6 +78,21 @@ test('indicator', t => {
   )
 
   t.truthy(actions[actionsSymbol] === true)
+})
+
+test('merge indicator', t => {
+  const actions = createActions('setText')
+  const actions2 = createActions('setText2')
+  const actionsCombo = mergeActions(actions, actions2)
+  const actionsSymbol = Symbol.for("__REVA_ACTIONS")
+  t.truthy(actionsCombo[actionsSymbol] === true)
+  const dom = mount(
+    <div>
+      <Sample actions={actionsCombo} />
+    </div>
+  )
+
+  t.truthy(actionsCombo[actionsSymbol] === true)
 })
 
 test('simple', t => {

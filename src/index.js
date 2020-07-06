@@ -193,6 +193,7 @@ export const mergeActions = (...all) => {
       }
     }
   }
+  result[actionsSymbol] = true
   result[implementSymbol] = implement
   return result
 }
