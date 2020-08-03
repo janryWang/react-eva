@@ -84,7 +84,7 @@ class ActionFactory {
             resolvers[name].push({ resolve: null, args, reject: null })
             if (console && console.error) {
               console.error(
-                `The action "${name}" is not implemented! We recommend that you call this method by \`createAscyncActions\``
+                `The action "${name}" is not implemented! We recommend that you call this method by \`createAsyncFormActions\``
               )
             }
           }
