@@ -9,4 +9,5 @@ explorations
 test/e2e/reports
 test/e2e/screenshots
 coverage
+lib
 dist
