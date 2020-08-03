@@ -1,6 +1,6 @@
 import React, { Component } from "react"
-import { Subject } from "rxjs"
-import { filter } from "rxjs/operators"
+import { Subject } from "rxjs/internal/Subject"
+import { filter } from "rxjs/internal/operators/filter"
 
 const isFn = val => typeof val === "function"
 
