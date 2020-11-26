@@ -1,12 +1,12 @@
 {
   "name": "react-eva",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "React distributed state management solution",
   "main": "lib/index.js",
   "scripts": {
     "test": " cross-env NODE_ENV=test ava",
     "build": "babel src --out-dir lib",
-    "precommit": "npm run build && lint-staged && npm run test  && git add -A"
+    "precommit": "npm run build && lint-staged  && git add -A"
   },
   "repository": {
     "type": "git",
