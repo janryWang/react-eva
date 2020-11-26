@@ -1,6 +1,6 @@
 {
   "name": "react-eva",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "React distributed state management solution",
   "main": "lib/index.js",
   "scripts": {
@@ -81,6 +81,7 @@
     }
   },
   "dependencies": {
-    "rxjs": "^6.3.3"
+    "rxjs": "^6.3.3",
+    "rxjs-compat":"^6.6.3"
   }
 }
