@@ -135,7 +135,7 @@ export const connect = options => {
         const { subscription, dispatch, implementActions } = createEva(
           props.actions,
           props.effects,
-          props.subscribes
+          this.subscribes
         )
         this.implementActions = implementActions
         this.subscription = subscription
